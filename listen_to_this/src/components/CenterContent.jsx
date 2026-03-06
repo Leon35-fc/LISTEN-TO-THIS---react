@@ -19,7 +19,8 @@ const CenterContent = () => {
   const [inputForm, setInputForm] = useState('');
   const [inputSubmited, setInputSubmited] = useState('');
   const [fetchedData, setFetchedData] = useState([]);
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState("");
+  const [audioPlaying, setAudioPlaying] = useState("");
 
 
   const deezerFetch = function (input) {
@@ -47,7 +48,14 @@ const CenterContent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     deezerFetch(inputForm.replaceAll(' ', '+'));
+    setInputForm('');
   };
+
+  const play = () => {
+     const audio = new Audio(selected.preview);
+
+     audio.play();
+  }
 
   return (
     <>
@@ -68,22 +76,22 @@ const CenterContent = () => {
             <Card className="d-flex align-items-center">
               <Card.Img
                 variant="top"
-                src="https://placehold.co/400x400"
+                src={!selected ? "https://placehold.co/400/" : selected.album.cover_xl}
                 className="w-50"
               />
               <Card.Body className="w-100">
                 <Card.Title className="d-flex align-content-start">
-                  Song Title
+                  {!selected ? "Song Title" : selected.title}
                 </Card.Title>
                 <Card.Text className="d-flex align-content-start">
-                  Artist Name
+                  {!selected ? "Artist" : selected.artist.name}
                 </Card.Text>
                 <div className="d-flex">
                   <div className="d-flex justify-content-start gap-1 me-auto">
                     <Button>
                       <BsFillSkipBackwardFill />
                     </Button>
-                    <Button>
+                    <Button onClick={() => {play()}}>
                       <BsFillPlayFill />
                     </Button>
                     <Button>
@@ -107,11 +115,11 @@ const CenterContent = () => {
               {fetchedData.map((data) => (
                 <Row
                   key={data.id}
-                  className={`row-cols-2 m-0 my-1 p-0 ${selected === data.id ? "border border-1 border-dark" : ""}  rounded rounded-2`}
-                  onClick={() => setSelected(data.id)}
+                  className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? "border border-1 border-dark" : ""}  rounded rounded-2`}
+                  onClick={() => setSelected(data)}
                 >
-                  <img src={data.album.cover} alt="" className="w-25" />
-                  <div>
+                  <img src={data.album.cover_xl} alt="" className="" />
+                  <div className='flex-grow-1'>
                     <p>
                       <span className="fw-semibold">Artist</span>{' '}
                       {data.artist.name}
