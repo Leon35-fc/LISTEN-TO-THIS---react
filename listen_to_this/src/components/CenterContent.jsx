@@ -20,7 +20,7 @@ const CenterContent = () => {
   const [inputSubmited, setInputSubmited] = useState('');
   const [fetchedData, setFetchedData] = useState([]);
   const [selected, setSelected] = useState("");
-  const [audioPlaying, setAudioPlaying] = useState("");
+  const [audioPlaying, setAudioPlaying] = useState();
 
 
   const deezerFetch = function (input) {
@@ -52,10 +52,15 @@ const CenterContent = () => {
   };
 
   const play = () => {
-     const audio = new Audio(selected.preview);
+    if(audioPlaying) {
+      audioPlaying.pause()
+      audioPlaying.src = ''}
 
-     audio.play();
+      const newSource = new Audio(selected.preview);
+      newSource.play();
+      setAudioPlaying(newSource);
   }
+
 
   return (
     <>
@@ -91,7 +96,8 @@ const CenterContent = () => {
                     <Button>
                       <BsFillSkipBackwardFill />
                     </Button>
-                    <Button onClick={() => {play()}}>
+                    <Button onClick={() => {play();
+                    }}>
                       <BsFillPlayFill />
                     </Button>
                     <Button>
