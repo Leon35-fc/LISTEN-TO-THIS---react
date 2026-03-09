@@ -21,6 +21,7 @@ const CenterContent = () => {
   const [selected, setSelected] = useState('');
   const [audioPlaying, setAudioPlaying] = useState();
   const audioRef = useRef(null);
+  const [progress, setProgress] = useState(50);
 
   const deezerFetch = function (input) {
     if (!input || input == 'undefined') return;
@@ -50,55 +51,74 @@ const CenterContent = () => {
     setInputForm('');
   };
 
-  useEffect(() => {
-    play();
-  }, [selected]);
-
   const play = () => {
-    if (audioPlaying) {
-      audioPlaying.pause();
+    if (audioRef.current) {
+      audioRef.current.play();
       // audioPlaying.currentTime = 0;
-      setAudioPlaying((audioPlaying.src = ''));
+      setAudioPlaying(true);
     }
 
-    if (audioPlaying === selected) {
-      audioPlaying;
-    }
+    // if (audioRef.current === selected) {
+    //   audioPlaying;
+    // }
 
-    const newSource = new Audio(selected.preview);
-    newSource.play();
-    setAudioPlaying(newSource);
+    // const newSource = new Audio(selected.preview);
+    // newSource.play();
+    // setAudioPlaying(audioRef.current);
   };
 
   const stop = () => {
-    audioPlaying.pause();
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0; // Resetta l'audio all'inizio
-    setAudioPlaying('');
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0; // Resetta l'audio all'inizio
+      setAudioPlaying(false);
+    }
+  };
+
+  const changeSong = (direction) => {
+    //index of the current selected song from the fatch
+    const currentSongIndex = fetchedData.findIndex(
+      (song) => song.id === selected.id
+    );
+    let nextSong = (currentSongIndex + direction) % fetchedData.length;
+
+    // if (nextSong >= fetchedData.lenght) {
+    //   nextSong = 0;
+    // } else if (nextSong < 0) {
+    //   nextSong = fetchedData.length - 1;
+    // }
+
+    if(nextSong <0){
+      nextSong = fetchedData.length - 1;
+    }
+    console.log(selected);
+    setSelected(fetchedData[nextSong]);
   };
 
   const handleTimeUpdate = () => {
     const current = audioRef.current.currentTime;
+    // console.log('CURRENT TIME: ', current);
     const total = audioRef.current.duration;
+    // console.log('TOTAL TIME: ', total);
     setProgress((current / total) * 100);
   };
 
-  const changeSong = (index) => {
-    //index of the current selected song from the fatch
-    const currentSongIndex = fetchedData.indexOf(selected);
-    const nextSong = (currentSongIndex + index) % fetchedData.length;
-    audioPlaying.pause();
-    console.log(selected);
-    setAudioPlaying(fetchedData[nextSong]);
-    setSelected(fetchedData[nextSong]);
-    audioPlaying.pause();
-    play();
+  const handleTimeSkip = (e) => {
+    const box = e.currentTarget;
+    const rect = box.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const percentage = clickX / rect.width;
+    const duration = audioRef.current.duration;
+    audioRef.current.currentTime = percentage * duration;
   };
+
+  useEffect(() => {
+    play();
+  }, [selected]);
 
   return (
     <>
       <div className="border border-2 border-black my-3 p-2">
-        <p>CENTER CONTENT</p>
         <Container>
           {/* CARD/PLAYER */}
           <Row className="my-3">
@@ -134,14 +154,23 @@ const CenterContent = () => {
                       <BsFillSkipForwardFill />
                     </Button>
                   </div>
-                  <ProgressBar
-                    now="20"
-                    className="flex-grow-1 ms-1"
-                    onChange={handleTimeUpdate}
-                  />
+                  <ProgressBar now={progress} className="flex-grow-1 ms-1" />
                 </div>
                 <div>
-                  <ProgressBar now="20" className="flex-grow-1 my-2" />
+                  <ProgressBar
+                    now={progress}
+                    className="flex-grow-1 my-2"
+                    onClick={(e) => handleTimeSkip(e)}
+                  />
+
+                  <audio
+                    ref={audioRef}
+                    src={selected?.preview}
+                    onTimeUpdate={handleTimeUpdate}
+                    onPlay={() => setAudioPlaying(true)}
+                    onPause={() => setAudioPlaying(false)}
+                    onEnded={() => changeSong(1)}
+                  />
                 </div>
               </Card.Body>
             </Card>
