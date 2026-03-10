@@ -8,20 +8,33 @@ import {
   ProgressBar,
   Button
 } from 'react-bootstrap';
-import { BsFillPlayFill } from 'react-icons/bs';
-import { BsFillStopFill } from 'react-icons/bs';
-import { BsFillSkipBackwardFill } from 'react-icons/bs';
-import { BsFillSkipForwardFill } from 'react-icons/bs';
+import {
+  BsFillPlayFill,
+  BsFillStopFill,
+  BsFillSkipBackwardFill,
+  BsFillSkipForwardFill,
+  BsFillPauseFill,
+  BsFillVolumeMuteFill,
+  BsFillVolumeOffFill,
+  BsFillVolumeDownFill,
+  BsFillVolumeUpFill
+} from 'react-icons/bs';
 
 const CenterContent = () => {
   const searchURL =
     'https://striveschool-api.herokuapp.com/api/deezer/search?q=';
   const [inputForm, setInputForm] = useState('');
   const [fetchedData, setFetchedData] = useState([]);
+  //FETCHED ELEMENTS
   const [selected, setSelected] = useState('');
-  const [audioPlaying, setAudioPlaying] = useState();
+  //AUDIO
+  const [isPlaying, setIsPlaying] = useState();
   const audioRef = useRef(null);
-  const [progress, setProgress] = useState(50);
+  const [progress, setProgress] = useState(0);
+  //VOLUME
+  const [slider, setSliderValue] = useState(50);
+  const [sliderPrev, setSliderPrevValue] = useState();
+  const [mute, setMute] = useState(false);
 
   const deezerFetch = function (input) {
     if (!input || input == 'undefined') return;
@@ -54,24 +67,22 @@ const CenterContent = () => {
   const play = () => {
     if (audioRef.current) {
       audioRef.current.play();
-      // audioPlaying.currentTime = 0;
-      setAudioPlaying(true);
+      setIsPlaying(true);
     }
+  };
 
-    // if (audioRef.current === selected) {
-    //   audioPlaying;
-    // }
-
-    // const newSource = new Audio(selected.preview);
-    // newSource.play();
-    // setAudioPlaying(audioRef.current);
+  const pause = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
   const stop = () => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0; // Resetta l'audio all'inizio
-      setAudioPlaying(false);
+      setIsPlaying(false);
     }
   };
 
@@ -82,13 +93,7 @@ const CenterContent = () => {
     );
     let nextSong = (currentSongIndex + direction) % fetchedData.length;
 
-    // if (nextSong >= fetchedData.lenght) {
-    //   nextSong = 0;
-    // } else if (nextSong < 0) {
-    //   nextSong = fetchedData.length - 1;
-    // }
-
-    if(nextSong <0){
+    if (nextSong < 0) {
       nextSong = fetchedData.length - 1;
     }
     console.log(selected);
@@ -112,9 +117,57 @@ const CenterContent = () => {
     audioRef.current.currentTime = percentage * duration;
   };
 
-  useEffect(() => {
-    play();
-  }, [selected]);
+  const handleVolume = function (e) {
+    console.log(e.target.value);
+    console.log(slider * 0.01);
+    setSliderValue((e.target.value));
+    let a = slider * 0.001
+    console.log("A: ",a);
+    if( a < 0.04 || a > 0.96){
+      a = Math.floor(a)
+    }
+    audioRef.current.volume = a
+  };
+
+  const handleMute = function (e) {
+    console.log(e.target);
+    const rangeSlider = document.querySelector('.form-range');
+    console.log('Il rangeSlider', rangeSlider.value);
+    if (mute && slider == 0) {
+      console.log('Slider prima di cambio parametri', slider);
+
+      setMute(false);
+      setSliderValue(sliderPrev);
+      rangeSlider.value = sliderPrev;
+      console.log("I'm on", sliderPrev);
+      audioRef.current.volume = slider;
+    } else {
+      setSliderPrevValue(slider);
+      setMute(true);
+      setSliderValue(0);
+      console.log("I'm mute ", sliderPrev);
+      audioRef.current.volume = 0;
+    }
+  };
+
+  const volumeIcon = function (a) {
+    a = Math.ceil(slider / 34);
+    // console.log( 'A vale: ',a)
+    switch (a) {
+      case 0:
+        return <BsFillVolumeMuteFill />;
+      case 1:
+        return <BsFillVolumeOffFill />;
+      case 2:
+        return <BsFillVolumeDownFill />;
+      case 3:
+        return <BsFillVolumeUpFill />;
+    }
+  };
+
+  useEffect(() => play(), [selected]);
+
+  useEffect(() => setIsPlaying(false), []);
 
   return (
     <>
@@ -130,7 +183,7 @@ const CenterContent = () => {
                     ? 'https://placehold.co/400/'
                     : selected.album.cover_xl
                 }
-                className="w-50"
+                className="w-50 mt-2"
               />
               <Card.Body className="w-100">
                 <Card.Title className="d-flex align-content-start">
@@ -144,8 +197,12 @@ const CenterContent = () => {
                     <Button onClick={() => changeSong(-1)}>
                       <BsFillSkipBackwardFill />
                     </Button>
-                    <Button onClick={() => play()}>
-                      <BsFillPlayFill />
+                    <Button
+                      onClick={() => {
+                        isPlaying ? pause() : play();
+                      }}
+                    >
+                      {!isPlaying ? <BsFillPlayFill /> : <BsFillPauseFill />}
                     </Button>
                     <Button onClick={() => stop()}>
                       <BsFillStopFill />
@@ -153,8 +210,24 @@ const CenterContent = () => {
                     <Button onClick={() => changeSong(1)}>
                       <BsFillSkipForwardFill />
                     </Button>
+                    <Form.Range
+                      className="w-50 p-1"
+                      min="0"
+                      max="100"
+                      value={slider}
+                      onChange={handleVolume}
+                      onClick={handleVolume}
+                      style={{ '--value': `${slider}%` }}
+                    />
+                    <Button
+                      // className="bg-transparent border-0 fs-2 d-flex"
+                      className=" fs-4 d-flex align-middle"
+                      onClick={handleMute}
+                    >
+                      {volumeIcon()}
+                    </Button>
                   </div>
-                  <ProgressBar now={progress} className="flex-grow-1 ms-1" />
+                  {/* <ProgressBar now={progress} className="flex-grow-1 ms-1" /> */}
                 </div>
                 <div>
                   <ProgressBar
@@ -167,9 +240,10 @@ const CenterContent = () => {
                     ref={audioRef}
                     src={selected?.preview}
                     onTimeUpdate={handleTimeUpdate}
-                    onPlay={() => setAudioPlaying(true)}
-                    onPause={() => setAudioPlaying(false)}
-                    onEnded={() => changeSong(1)}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onEnded={() => changeSong(0)}
+                    onVolumeChange={() => handleVolume}
                   />
                 </div>
               </Card.Body>
