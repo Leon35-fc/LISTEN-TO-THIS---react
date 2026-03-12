@@ -6,7 +6,8 @@ import {
   Row,
   Col,
   ProgressBar,
-  Button
+  Button,
+  Badge
 } from 'react-bootstrap';
 import {
   BsFillPlayFill,
@@ -17,8 +18,14 @@ import {
   BsFillVolumeMuteFill,
   BsFillVolumeOffFill,
   BsFillVolumeDownFill,
-  BsFillVolumeUpFill
+  BsFillVolumeUpFill,
+  BsHandThumbsUp,
+  BsHandThumbsUpFill
 } from 'react-icons/bs';
+
+import { deezerFetch } from './deezerApi';
+import CustomCarousel from './CustomCarousel';
+import Results from './Results';
 
 const CenterContent = () => {
   const searchURL =
@@ -35,32 +42,33 @@ const CenterContent = () => {
   const [slider, setSliderValue] = useState(50);
   const [sliderPrev, setSliderPrevValue] = useState();
   const [mute, setMute] = useState(false);
+  //SUGGESTION
 
-  const deezerFetch = function (input) {
-    if (!input || input == 'undefined') return;
-    console.log('from fetch', input);
+  // const deezerFetch = function (input) {
+  //   if (!input || input == 'undefined') return;
+  //   console.log('from fetch', input);
 
-    fetch(searchURL + input)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Errore nel recupero dei dati.');
-        }
-      })
-      .then((data) => {
-        console.log(data);
+  //   fetch(searchURL + input)
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         return response.json();
+  //       } else {
+  //         throw new Error('Errore nel recupero dei dati.');
+  //       }
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
 
-        setFetchedData(data.data);
-      })
-      .catch((error) => {
-        console.log('Errore.', error);
-      });
-  };
+  //       setFetchedData(data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log('Errore.', error);
+  //     });
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    deezerFetch(inputForm.replaceAll(' ', '+'));
+    deezerFetch(searchURL + inputForm.replaceAll(' ', '+'), setFetchedData);
     setInputForm('');
   };
 
@@ -120,18 +128,23 @@ const CenterContent = () => {
   const handleVolume = function (e) {
     console.log(e.target.value);
     console.log(slider * 0.01);
-    setSliderValue((e.target.value));
-    let a = slider * 0.001
-    console.log("A: ",a);
-    if( a < 0.04 || a > 0.96){
-      a = Math.floor(a)
-    }
-    audioRef.current.volume = a
+
+    const box = e.currentTarget;
+    const rect = box.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    let percentage = clickX / rect.width;
+
+    if (percentage < 0.04) percentage = 0;
+    if (percentage > 0.94) percentage = 1;
+    setSliderValue(percentage * 100);
+    console.log('% ', percentage);
+
+    audioRef.current.volume = percentage;
   };
 
   const handleMute = function (e) {
     console.log(e.target);
-    const rangeSlider = document.querySelector('.form-range');
+    const rangeSlider = document.querySelector('.progress-bar');
     console.log('Il rangeSlider', rangeSlider.value);
     if (mute && slider == 0) {
       console.log('Slider prima di cambio parametri', slider);
@@ -140,7 +153,7 @@ const CenterContent = () => {
       setSliderValue(sliderPrev);
       rangeSlider.value = sliderPrev;
       console.log("I'm on", sliderPrev);
-      audioRef.current.volume = slider;
+      audioRef.current.volume = sliderPrev * 0.01;
     } else {
       setSliderPrevValue(slider);
       setMute(true);
@@ -150,8 +163,8 @@ const CenterContent = () => {
     }
   };
 
-  const volumeIcon = function (a) {
-    a = Math.ceil(slider / 34);
+  const volumeIcon = function () {
+    const a = Math.ceil(slider / 34);
     // console.log( 'A vale: ',a)
     switch (a) {
       case 0:
@@ -165,90 +178,112 @@ const CenterContent = () => {
     }
   };
 
-  useEffect(() => play(), [selected]);
+  useEffect(() => deezerFetch(), [])
+
+  useEffect(() => selected ? play() : stop(), [selected]);
 
   useEffect(() => setIsPlaying(false), []);
 
   return (
     <>
-      <div className="border border-2 border-black my-3 p-2">
+      <Row className="row-cols-1 border border-2 border-black my-3 p-2">
         <Container>
           {/* CARD/PLAYER */}
-          <Row className="my-3">
-            <Card className="d-flex align-items-center">
-              <Card.Img
-                variant="top"
-                src={
-                  !selected
-                    ? 'https://placehold.co/400/'
-                    : selected.album.cover_xl
-                }
-                className="w-50 mt-2"
-              />
-              <Card.Body className="w-100">
-                <Card.Title className="d-flex align-content-start">
-                  {!selected ? 'Song Title' : selected.title}
-                </Card.Title>
-                <Card.Text className="d-flex align-content-start">
-                  {!selected ? 'Artist' : selected.artist.name}
-                </Card.Text>
-                <div className="d-flex">
-                  <div className="d-flex justify-content-start gap-1 me-auto">
-                    <Button onClick={() => changeSong(-1)}>
-                      <BsFillSkipBackwardFill />
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        isPlaying ? pause() : play();
-                      }}
-                    >
-                      {!isPlaying ? <BsFillPlayFill /> : <BsFillPauseFill />}
-                    </Button>
-                    <Button onClick={() => stop()}>
-                      <BsFillStopFill />
-                    </Button>
-                    <Button onClick={() => changeSong(1)}>
-                      <BsFillSkipForwardFill />
-                    </Button>
-                    <Form.Range
-                      className="w-50 p-1"
-                      min="0"
-                      max="100"
-                      value={slider}
-                      onChange={handleVolume}
-                      onClick={handleVolume}
-                      style={{ '--value': `${slider}%` }}
-                    />
-                    <Button
-                      // className="bg-transparent border-0 fs-2 d-flex"
-                      className=" fs-4 d-flex align-middle"
-                      onClick={handleMute}
-                    >
-                      {volumeIcon()}
-                    </Button>
+          {fetchedData.length > 0 && (
+            <Row className="my-3">
+              <Card className="d-flex align-items-center">
+                <Card.Img
+                  variant="top"
+                  src={
+                    !selected
+                      ? ' ' // 'https://placehold.co/400/' in alternativa alla stringa null
+                      : selected.album.cover_xl
+                  }
+                  className="w-50 mt-2"
+                />
+                <Card.Body className="w-100">
+                  <Card.Title className="d-flex align-content-start">
+                    {!selected ? '' : selected.title}
+                  </Card.Title>
+                  <Card.Text className="d-flex align-content-start">
+                    {!selected ? '' : selected.artist.name}
+                  </Card.Text>
+                  <div className="d-flex align-items-center">
+                    <div className="d-flex justify-content-start gap-1 me-auto w-100">
+                      <Button onClick={() => changeSong(-1)}>
+                        <BsFillSkipBackwardFill className="fs-6 d-flex align-middle justify-content-start" />
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          isPlaying ? pause() : play();
+                        }}
+                      >
+                        {!isPlaying ? (
+                          <BsFillPlayFill className="fs-6 d-flex align-middle justify-content-start" />
+                        ) : (
+                          <BsFillPauseFill className="fs-6 d-flex align-middle justify-content-start" />
+                        )}
+                      </Button>
+                      <Button
+                        onClick={() => stop()}
+                        className="fs-6 d-flex align-middle justify-content-start"
+                      >
+                        <BsFillStopFill />
+                      </Button>
+                      <Button
+                        onClick={() => changeSong(1)}
+                        className="fs-6 d-flex align-middle justify-content-start"
+                      >
+                        <BsFillSkipForwardFill />
+                      </Button>
+                    </div>
+                    <div className="d-flex align-items-center gap-2 flex-grow-1 ms-3">
+                      <Form.Range
+                        className="p-1"
+                        min="0"
+                        max="100"
+                        defaultValue={slider}
+                        onClick={handleVolume}
+                      />
+                      {/* <ProgressBar
+                        now={slider}
+                        className="w-50"
+                        onClick={handleVolume}
+                        onDrag={handleVolume}
+                        // label={Math.round(slider)}
+                      /> */}
+                      <Button
+                        className="fs-5 d-flex align-middle justify-content-start"
+                        onClick={handleMute}
+                      >
+                        {volumeIcon()}
+                      </Button>
+                    </div>
                   </div>
-                  {/* <ProgressBar now={progress} className="flex-grow-1 ms-1" /> */}
-                </div>
-                <div>
-                  <ProgressBar
-                    now={progress}
-                    className="flex-grow-1 my-2"
-                    onClick={(e) => handleTimeSkip(e)}
-                  />
-
-                  <audio
-                    ref={audioRef}
-                    src={selected?.preview}
-                    onTimeUpdate={handleTimeUpdate}
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onEnded={() => changeSong(0)}
-                    onVolumeChange={() => handleVolume}
-                  />
-                </div>
-              </Card.Body>
-            </Card>
-          </Row>
+                  <div>
+                    <ProgressBar
+                      now={progress}
+                      className="flex-grow-1 my-2"
+                      onClick={(e) => handleTimeSkip(e)}
+                    />
+                    <p className="d-flex justify-content-between">
+                      <span>{Math.round(audioRef.current?.currentTime)}</span>
+                      <span>{Math.round(audioRef.current?.duration)}</span>
+                    </p>
+                    <audio
+                      ref={audioRef}
+                      src={selected?.preview}
+                      onTimeUpdate={handleTimeUpdate}
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                      onEnded={() => changeSong(0)}
+                      onVolumeChange={() => handleVolume}
+                    />
+                  </div>
+                </Card.Body>
+              </Card>
+            </Row>
+          )}
 
           {/* SEARCHBAR */}
           <Row className="my-1">
@@ -262,40 +297,15 @@ const CenterContent = () => {
             </Form>
           </Row>
 
-          {fetchedData && (
+          {fetchedData && fetchedData.length > 0 && (
             <Container className="p-0 m-0">
+              {/* <CustomCarousel dataAPI={fetchedData} /> */}
               {/* RISULTATI RICERCA */}
-              <Row className="text-start border border-1 bg-info-subtle rounded rounded-2">
-                <h4>Results</h4>
-                {fetchedData.map((data) => (
-                  <Row
-                    key={data.id}
-                    className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-dark' : ''}  rounded rounded-2`}
-                    onClick={() =>
-                      selected !== data ? setSelected(data) : setSelected('')
-                    }
-                  >
-                    <img src={data.album.cover_xl} alt="" className="" />
-                    <div className="flex-grow-1">
-                      <p>
-                        <span className="fw-semibold">Artist</span>{' '}
-                        {data.artist.name}
-                      </p>
-                      <p>
-                        <span className="fw-semibold">Album</span>{' '}
-                        {data.album.title}
-                      </p>
-                      <p>
-                        <span className="fw-semibold">Song</span> {data.title}
-                      </p>
-                    </div>
-                  </Row>
-                ))}
-              </Row>
+              <Results fetchedData={fetchedData} selected={selected} setSelected={setSelected} />
             </Container>
           )}
         </Container>
-      </div>
+      </Row>
     </>
   );
 };

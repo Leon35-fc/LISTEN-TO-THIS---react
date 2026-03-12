@@ -51,3 +51,13 @@
   background-color: rgba(141, 141, 255, 0.575);
   backdrop-filter: blur(20px);
 } */
+
+.progress:hover{
+  background-color: rgba(75, 75, 71, 0.25);
+  transform: scaleY(1.1);
+  backdrop-filter: blur(20px);
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
