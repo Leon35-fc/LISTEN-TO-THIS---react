@@ -22,6 +22,7 @@ import {
   BsHandThumbsUp,
   BsHandThumbsUpFill
 } from 'react-icons/bs';
+import { TbRepeat, TbRepeatOnce, TbRepeatOff } from "react-icons/tb";
 
 import { deezerFetch } from './deezerApi';
 import CustomCarousel from './CustomCarousel';
@@ -35,37 +36,18 @@ const CenterContent = () => {
   //FETCHED ELEMENTS
   const [selected, setSelected] = useState('');
   //AUDIO
-  const [isPlaying, setIsPlaying] = useState();
   const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState();
   const [progress, setProgress] = useState(0);
   //VOLUME
   const [slider, setSliderValue] = useState(50);
   const [sliderPrev, setSliderPrevValue] = useState();
   const [mute, setMute] = useState(false);
+  //TRACK
+  const [repeat, setRepeat] = useState(0);
   //SUGGESTION
 
-  // const deezerFetch = function (input) {
-  //   if (!input || input == 'undefined') return;
-  //   console.log('from fetch', input);
-
-  //   fetch(searchURL + input)
-  //     .then((response) => {
-  //       if (response.ok) {
-  //         return response.json();
-  //       } else {
-  //         throw new Error('Errore nel recupero dei dati.');
-  //       }
-  //     })
-  //     .then((data) => {
-  //       console.log(data);
-
-  //       setFetchedData(data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log('Errore.', error);
-  //     });
-  // };
-
+  //FUNCTIONS
   const handleSubmit = (e) => {
     e.preventDefault();
     deezerFetch(searchURL + inputForm.replaceAll(' ', '+'), setFetchedData);
@@ -178,9 +160,47 @@ const CenterContent = () => {
     }
   };
 
+  const repeatIcon = function (rep){
+    const a = rep % 3;
+    // setRepeat(a)
+    switch (a) {
+      case 0:
+        return <TbRepeatOff/>;
+      case 1:
+        return <TbRepeat />;
+      case 2:
+        return <TbRepeatOnce />;
+      // default:
+      //   changeSong(0)
+      //   return <TbRepeatOff />;
+    }
+
+    // if(a == 0) {
+    //   setRepeat(a + 1)
+    //   return <TbRepeatOff/>;
+    // }
+  }
+
+  const songTimeFormat = (time) => {
+    if (typeof time == 'number'){
+    // const a = time.toString()
+    // const seconds = a.padStart(2, 0);
+    // console.log('Funziono!', `01:${seconds}`);
+      // time = 119
+    let seconds = Math.round(time % 60)
+    let minutes = Math.round(time / 60)
+
+    seconds = seconds.toString().padStart(2, 0)
+    minutes = minutes.toString().padStart(2, 0)
+    return minutes + ":" + seconds
+    }
+  }
+
   useEffect(() => deezerFetch(), [])
 
   useEffect(() => selected ? play() : stop(), [selected]);
+
+  // useEffect(() => repeat == 'repeat_one' ? play() : changeSong())
 
   useEffect(() => setIsPlaying(false), []);
 
@@ -201,7 +221,7 @@ const CenterContent = () => {
                   }
                   className="w-50 mt-2"
                 />
-                <Card.Body className="w-100">
+                <Card.Body className="border border-2 rounded rounded-3 w-100 my-2">
                   <Card.Title className="d-flex align-content-start">
                     {!selected ? '' : selected.title}
                   </Card.Title>
@@ -236,6 +256,12 @@ const CenterContent = () => {
                       >
                         <BsFillSkipForwardFill />
                       </Button>
+                      <Button
+                        onClick={() => {setRepeat((repeat + 1)%3);console.log(repeatIcon())}}
+                        className="fs-6 d-flex align-middle justify-content-start"
+                      >
+                        {repeatIcon(repeat)}
+                      </Button>
                     </div>
                     <div className="d-flex align-items-center gap-2 flex-grow-1 ms-3">
                       <Form.Range
@@ -266,9 +292,9 @@ const CenterContent = () => {
                       className="flex-grow-1 my-2"
                       onClick={(e) => handleTimeSkip(e)}
                     />
-                    <p className="d-flex justify-content-between">
-                      <span>{Math.round(audioRef.current?.currentTime)}</span>
-                      <span>{Math.round(audioRef.current?.duration)}</span>
+                    <p className="d-flex  mb-0">
+                      <span>{songTimeFormat(audioRef.current?.currentTime)}</span>
+                      <span>/{songTimeFormat(audioRef.current?.duration)}</span>
                     </p>
                     <audio
                       ref={audioRef}
@@ -276,7 +302,7 @@ const CenterContent = () => {
                       onTimeUpdate={handleTimeUpdate}
                       onPlay={() => setIsPlaying(true)}
                       onPause={() => setIsPlaying(false)}
-                      onEnded={() => changeSong(0)}
+                      onEnded={() => repeat == 2 ? play() : changeSong(repeat)} 
                       onVolumeChange={() => handleVolume}
                     />
                   </div>
@@ -286,7 +312,7 @@ const CenterContent = () => {
           )}
 
           {/* SEARCHBAR */}
-          <Row className="my-1">
+          <Row className="my-2">
             <Form className="p-0" onSubmit={handleSubmit}>
               <Form.Control
                 type="text"

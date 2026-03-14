@@ -47,17 +47,16 @@
   justify-content: end;
 } */
 
-/* .card{
-  background-color: rgba(141, 141, 255, 0.575);
-  backdrop-filter: blur(20px);
-} */
-
-.progress:hover{
-  background-color: rgba(75, 75, 71, 0.25);
-  transform: scaleY(1.1);
-  backdrop-filter: blur(20px);
+.card{
+  /* background-color: rgba(255, 79, 79, 0.3); */
+  backdrop-filter: blur(10px);
 }
 
-.btn:hover {
-  transform: scale(1.05);
+.progress{
+  background-color: rgba(75, 75, 71, 0.25);
+  transform: scaleY(0.4);
+}
+.progress:hover{
+  background-color: var(--bs-secondary-bg);
+  transform: scaleY(0.8);
 }
