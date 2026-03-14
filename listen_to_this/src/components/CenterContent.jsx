@@ -41,7 +41,7 @@ const CenterContent = () => {
   const [progress, setProgress] = useState(0);
   //VOLUME
   const [slider, setSliderValue] = useState(50);
-  const [sliderPrev, setSliderPrevValue] = useState();
+  const [sliderPrev, setSliderPrevValue] = useState(0);
   const [mute, setMute] = useState(false);
   //TRACK
   const [repeat, setRepeat] = useState(0);
@@ -126,22 +126,20 @@ const CenterContent = () => {
 
   const handleMute = function (e) {
     console.log(e.target);
-    const rangeSlider = document.querySelector('.progress-bar');
-    console.log('Il rangeSlider', rangeSlider.value);
     if (mute && slider == 0) {
       console.log('Slider prima di cambio parametri', slider);
 
-      setMute(false);
       setSliderValue(sliderPrev);
-      rangeSlider.value = sliderPrev;
-      console.log("I'm on", sliderPrev);
       audioRef.current.volume = sliderPrev * 0.01;
+      setMute(false);
+      // rangeSlider.value = sliderPrev;
+      console.log("I'm on", sliderPrev);
     } else {
       setSliderPrevValue(slider);
-      setMute(true);
       setSliderValue(0);
-      console.log("I'm mute ", sliderPrev);
+      setMute(true);
       audioRef.current.volume = 0;
+      console.log("I'm mute ", sliderPrev);
     }
   };
 
@@ -164,29 +162,20 @@ const CenterContent = () => {
     const a = rep % 3;
     // setRepeat(a)
     switch (a) {
-      case 0:
-        return <TbRepeatOff/>;
+      // case 0:
+      //   return <TbRepeatOff/>;
       case 1:
         return <TbRepeat />;
       case 2:
         return <TbRepeatOnce />;
-      // default:
-      //   changeSong(0)
-      //   return <TbRepeatOff />;
+      default:
+        return <TbRepeatOff />;
     }
-
-    // if(a == 0) {
-    //   setRepeat(a + 1)
-    //   return <TbRepeatOff/>;
-    // }
   }
 
   const songTimeFormat = (time) => {
     if (typeof time == 'number'){
-    // const a = time.toString()
-    // const seconds = a.padStart(2, 0);
     // console.log('Funziono!', `01:${seconds}`);
-      // time = 119
     let seconds = Math.round(time % 60)
     let minutes = Math.round(time / 60)
 
@@ -268,7 +257,7 @@ const CenterContent = () => {
                         className="p-1"
                         min="0"
                         max="100"
-                        defaultValue={slider}
+                        value={slider}
                         onClick={handleVolume}
                       />
                       {/* <ProgressBar
@@ -327,7 +316,7 @@ const CenterContent = () => {
             <Container className="p-0 m-0">
               {/* <CustomCarousel dataAPI={fetchedData} /> */}
               {/* RISULTATI RICERCA */}
-              <Results fetchedData={fetchedData} selected={selected} setSelected={setSelected} />
+              <Results fetchedData={fetchedData} selected={selected} setSelected={setSelected} modal={false}/>
             </Container>
           )}
         </Container>

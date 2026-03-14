@@ -8,14 +8,18 @@ import {
   BsHandThumbsUp,
   BsHandThumbsUpFill
 } from 'react-icons/bs';
+import NewSuggestion from "./NewSuggestion";
 
 const Results = (props) =>{
-    const [like, setLike] = useState([])
-
+    //PROPS
     const selected = props.selected
     const fetchedData = props.fetchedData
     const setSelected = props.setSelected
-
+    const modal = props.modal
+    //USESTATE
+    const [like, setLike] = useState([])
+    const [show, setShow] = useState(false)
+    
     const likeIcon = () => {   
         switch(like){
             case "true":
@@ -43,8 +47,8 @@ const Results = (props) =>{
 
     return(
         <>
-        <Row className="text-start border border-1 bg-info-subtle rounded rounded-2 py-2">
-                <h4>Results</h4>
+                <h4 className="text-start">Results</h4>
+        <Row className={`text-start border border-1 bg-info-subtle rounded rounded-2 py-2 ${modal && 'overflow-y-auto'}`} style={modal ? { height: '500px' } : {}}>
                 {fetchedData.map((data) => (
                   <Row
                     key={data.id}
@@ -74,17 +78,18 @@ const Results = (props) =>{
                         <span className="fw-semibold">Album</span>{' '}
                         {data.album.title}
                       </p>
-                      <Row className="row-cols-2 row-cols-md-4 justify-content-between">
+                      {!modal && (<Row className="row-cols-2 row-cols-md-4 justify-content-between">
 
-                        <Button onClick={(e) => {e.stopPropagation(); console.log("suggerita!");
+                        <Button onClick={(e) => {e.stopPropagation(); setShow(!show);console.log("suggerita!");
                         }}> Suggest! </Button>
 
+                        <NewSuggestion show={show} setShow={setShow} songId={data.id}/>
                         <Button 
                         className="bg-transparent text-primary border border-0" 
                         onClick={(e) => {e.stopPropagation(); handleLike(data.id); console.log(localStorage.results);}
                         }> {like.includes(data.id) ? <BsHandThumbsUpFill  className="transparent"/> : <BsHandThumbsUp />}</Button>
                         
-                      </Row>
+                      </Row>)}
                     </div>
                   </Row>
                 ))}
