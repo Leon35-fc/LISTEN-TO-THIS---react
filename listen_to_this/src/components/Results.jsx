@@ -43,8 +43,6 @@ const Results = (props) =>{
         
     }
 
-    useEffect(() => handleLike, [localStorage])
-
     return(
         <>
                 <h4 className="text-start">Results</h4>
@@ -53,8 +51,8 @@ const Results = (props) =>{
                   <Row
                     key={data.id}
                     className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-dark' : ''}  rounded rounded-2 py-1`}
-                    onClick={() =>
-                      selected !== data ? setSelected(data) : setSelected('')
+                    onClick={(e) =>
+                      {e.stopPropagation();(selected !== data ? setSelected(data) : setSelected(''))}
                     }
                   >
                     {/* <img src={data.album.cover_xl} alt="album cover" className="w-25"/> */}
@@ -80,7 +78,7 @@ const Results = (props) =>{
                       </p>
                       {!modal && (<Row className="row-cols-2 row-cols-md-4 justify-content-between">
 
-                        <Button onClick={(e) => {e.stopPropagation(); setShow(!show);console.log("suggerita!");
+                        <Button className="px-0 mx-0" onClick={(e) => {e.stopPropagation(); setShow(data.id); console.log("Suggerisci!");
                         }}> Suggest! </Button>
 
                         <NewSuggestion show={show} setShow={setShow} songId={data.id}/>

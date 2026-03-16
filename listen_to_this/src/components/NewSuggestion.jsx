@@ -6,7 +6,7 @@ import Results from './Results';
 
 function NewSuggestion(props) {
   //PROPS
-  const show = props.show;
+  const showId = props.show;
   const setShow = props.setShow;
   const songId = props.songId;
   //CONST
@@ -23,7 +23,8 @@ function NewSuggestion(props) {
       setSuggestedForm('');
     };
 
-    const handleSuggestedSubmit = () => {
+    const handleSuggestedSubmit = (e) => {
+      e.stopPropagation();
       console.log(songId);
       console.log(suggestedSelect);
       let suggested = {
@@ -36,7 +37,7 @@ function NewSuggestion(props) {
 
   return (
     <>
-      <Modal show={show} onHide={() => setShow(false)}>
+      <Modal show={showId == songId} onHide={() => setShow(false)} onClick={(e) => e.stopPropagation()}>
         <Modal.Header closeButton>
           <Modal.Title>Suggest a song!</Modal.Title>
         </Modal.Header>
@@ -47,7 +48,7 @@ function NewSuggestion(props) {
                 type="text"
                 placeholder="Search a song"
                 value={suggestedForm}
-                onChange={(e) => setSuggestedForm(e.target.value)}
+                onChange={(e) => {(setSuggestedForm(e.target.value))}}
               />
             </Form>
           </Row>
@@ -64,10 +65,10 @@ function NewSuggestion(props) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={(e) => {setShow(false); e.stopPropagation()}}>
+          <Button variant="secondary" onClick={() => {setShow(false)}}>
             Close
           </Button>
-          <Button variant="primary" onClick={(e) => {handleSuggestedSubmit(); e.stopPropagation();setShow(false)}}>
+          <Button variant="primary" onClick={(e) => {handleSuggestedSubmit(e); setShow(false)}}>
             Submit
           </Button>
         </Modal.Footer>

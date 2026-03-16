@@ -111,10 +111,10 @@ const CenterContent = () => {
     console.log(e.target.value);
     console.log(slider * 0.01);
 
-    const box = e.currentTarget;
-    const rect = box.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    let percentage = clickX / rect.width;
+    // const box = e.currentTarget;
+    // const rect = box.getBoundingClientRect();
+    // const clickX = e.clientX - rect.left;
+    let percentage = e.target.value * 0.01;
 
     if (percentage < 0.04) percentage = 0;
     if (percentage > 0.94) percentage = 1;
@@ -258,7 +258,7 @@ const CenterContent = () => {
                         min="0"
                         max="100"
                         value={slider}
-                        onClick={handleVolume}
+                        onChange={handleVolume}
                       />
                       {/* <ProgressBar
                         now={slider}
