@@ -22,11 +22,12 @@ import {
   BsHandThumbsUp,
   BsHandThumbsUpFill
 } from 'react-icons/bs';
-import { TbRepeat, TbRepeatOnce, TbRepeatOff } from "react-icons/tb";
+import { TbRepeat, TbRepeatOnce, TbRepeatOff } from 'react-icons/tb';
 
 import { deezerFetch } from './deezerApi';
 import CustomCarousel from './CustomCarousel';
 import Results from './Results';
+import { useNavigate } from 'react-router-dom';
 
 const CenterContent = () => {
   const searchURL =
@@ -46,6 +47,8 @@ const CenterContent = () => {
   //TRACK
   const [repeat, setRepeat] = useState(0);
   //SUGGESTION
+
+  //NAV-ROUTE-DOM
 
   //FUNCTIONS
   const handleSubmit = (e) => {
@@ -111,9 +114,6 @@ const CenterContent = () => {
     console.log(e.target.value);
     console.log(slider * 0.01);
 
-    // const box = e.currentTarget;
-    // const rect = box.getBoundingClientRect();
-    // const clickX = e.clientX - rect.left;
     let percentage = e.target.value * 0.01;
 
     if (percentage < 0.04) percentage = 0;
@@ -158,7 +158,7 @@ const CenterContent = () => {
     }
   };
 
-  const repeatIcon = function (rep){
+  const repeatIcon = function (rep) {
     const a = rep % 3;
     // setRepeat(a)
     switch (a) {
@@ -171,23 +171,23 @@ const CenterContent = () => {
       default:
         return <TbRepeatOff />;
     }
-  }
+  };
 
   const songTimeFormat = (time) => {
-    if (typeof time == 'number'){
-    // console.log('Funziono!', `01:${seconds}`);
-    let seconds = Math.round(time % 60)
-    let minutes = Math.round(time / 60)
+    if (typeof time == 'number') {
+      // console.log('Funziono!', `01:${seconds}`);
+      let seconds = Math.round(time % 60);
+      let minutes = Math.round(time / 60);
 
-    seconds = seconds.toString().padStart(2, 0)
-    minutes = minutes.toString().padStart(2, 0)
-    return minutes + ":" + seconds
+      seconds = seconds.toString().padStart(2, 0);
+      minutes = minutes.toString().padStart(2, 0);
+      return minutes + ':' + seconds;
     }
-  }
+  };
 
-  useEffect(() => deezerFetch(), [])
+  useEffect(() => deezerFetch(), []);
 
-  useEffect(() => selected ? play() : stop(), [selected]);
+  useEffect(() => (selected ? play() : stop()), [selected]);
 
   // useEffect(() => repeat == 'repeat_one' ? play() : changeSong())
 
@@ -195,132 +195,138 @@ const CenterContent = () => {
 
   return (
     <>
-      <Row className="row-cols-1 border border-2 border-black my-3 p-2">
-        <Container>
-          {/* CARD/PLAYER */}
-          {fetchedData.length > 0 && (
-            <Row className="my-3">
-              <Card className="d-flex align-items-center">
-                <Card.Img
-                  variant="top"
-                  src={
-                    !selected
-                      ? ' ' // 'https://placehold.co/400/' in alternativa alla stringa null
-                      : selected.album.cover_xl
-                  }
-                  className="w-50 mt-2"
-                />
-                <Card.Body className="border border-2 rounded rounded-3 w-100 my-2">
-                  <Card.Title className="d-flex align-content-start">
-                    {!selected ? '' : selected.title}
-                  </Card.Title>
-                  <Card.Text className="d-flex align-content-start">
-                    {!selected ? '' : selected.artist.name}
-                  </Card.Text>
-                  <div className="d-flex align-items-center">
-                    <div className="d-flex justify-content-start gap-1 me-auto w-100">
-                      <Button onClick={() => changeSong(-1)}>
-                        <BsFillSkipBackwardFill className="fs-6 d-flex align-middle justify-content-start" />
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          isPlaying ? pause() : play();
-                        }}
-                      >
-                        {!isPlaying ? (
-                          <BsFillPlayFill className="fs-6 d-flex align-middle justify-content-start" />
-                        ) : (
-                          <BsFillPauseFill className="fs-6 d-flex align-middle justify-content-start" />
-                        )}
-                      </Button>
-                      <Button
-                        onClick={() => stop()}
-                        className="fs-6 d-flex align-middle justify-content-start"
-                      >
-                        <BsFillStopFill />
-                      </Button>
-                      <Button
-                        onClick={() => changeSong(1)}
-                        className="fs-6 d-flex align-middle justify-content-start"
-                      >
-                        <BsFillSkipForwardFill />
-                      </Button>
-                      <Button
-                        onClick={() => {setRepeat((repeat + 1)%3);console.log(repeatIcon())}}
-                        className="fs-6 d-flex align-middle justify-content-start"
-                      >
-                        {repeatIcon(repeat)}
-                      </Button>
-                    </div>
-                    <div className="d-flex align-items-center gap-2 flex-grow-1 ms-3">
-                      <Form.Range
-                        className="p-1"
-                        min="0"
-                        max="100"
-                        value={slider}
-                        onChange={handleVolume}
-                      />
-                      {/* <ProgressBar
+      <Container>
+        {/* CARD/PLAYER */}
+        {fetchedData.length > 0 && (
+          <Row className="row-cols-1 border border-2 border-black my-3 p-2">
+            <Card className="d-flex align-items-center">
+              <Card.Img
+                variant="top"
+                src={
+                  !selected
+                    ? ' ' // 'https://placehold.co/400/' in alternativa alla stringa null
+                    : selected.album.cover_xl
+                }
+                className="w-50 mt-2"
+              />
+              <Card.Body className="border border-2 rounded rounded-3 w-100 my-2">
+                <Card.Title className="d-flex align-content-start">
+                  {!selected ? '' : selected.title}
+                </Card.Title>
+                <Card.Text className="d-flex align-content-start">
+                  {!selected ? '' : selected.artist.name}
+                </Card.Text>
+                <div className="d-flex align-items-center">
+                  <div className="d-flex justify-content-start gap-1 me-auto w-100">
+                    <Button onClick={() => changeSong(-1)}>
+                      <BsFillSkipBackwardFill className="fs-6 d-flex align-middle justify-content-start" />
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        isPlaying ? pause() : play();
+                      }}
+                    >
+                      {!isPlaying ? (
+                        <BsFillPlayFill className="fs-6 d-flex align-middle justify-content-start" />
+                      ) : (
+                        <BsFillPauseFill className="fs-6 d-flex align-middle justify-content-start" />
+                      )}
+                    </Button>
+                    <Button
+                      onClick={() => stop()}
+                      className="fs-6 d-flex align-middle justify-content-start"
+                    >
+                      <BsFillStopFill />
+                    </Button>
+                    <Button
+                      onClick={() => changeSong(1)}
+                      className="fs-6 d-flex align-middle justify-content-start"
+                    >
+                      <BsFillSkipForwardFill />
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setRepeat((repeat + 1) % 3);
+                        console.log(repeatIcon());
+                      }}
+                      className="fs-6 d-flex align-middle justify-content-start"
+                    >
+                      {repeatIcon(repeat)}
+                    </Button>
+                  </div>
+                  <div className="d-flex align-items-center gap-2 flex-grow-1 ms-3">
+                    <Form.Range
+                      className="p-1"
+                      min="0"
+                      max="100"
+                      value={slider}
+                      onChange={handleVolume}
+                    />
+                    {/* <ProgressBar
                         now={slider}
                         className="w-50"
                         onClick={handleVolume}
                         onDrag={handleVolume}
                         // label={Math.round(slider)}
                       /> */}
-                      <Button
-                        className="fs-5 d-flex align-middle justify-content-start"
-                        onClick={handleMute}
-                      >
-                        {volumeIcon()}
-                      </Button>
-                    </div>
+                    <Button
+                      className="fs-5 d-flex align-middle justify-content-start"
+                      onClick={handleMute}
+                    >
+                      {volumeIcon()}
+                    </Button>
                   </div>
-                  <div>
-                    <ProgressBar
-                      now={progress}
-                      className="flex-grow-1 my-2"
-                      onClick={(e) => handleTimeSkip(e)}
-                    />
-                    <p className="d-flex  mb-0">
-                      <span>{songTimeFormat(audioRef.current?.currentTime)}</span>
-                      <span>/{songTimeFormat(audioRef.current?.duration)}</span>
-                    </p>
-                    <audio
-                      ref={audioRef}
-                      src={selected?.preview}
-                      onTimeUpdate={handleTimeUpdate}
-                      onPlay={() => setIsPlaying(true)}
-                      onPause={() => setIsPlaying(false)}
-                      onEnded={() => repeat == 2 ? play() : changeSong(repeat)} 
-                      onVolumeChange={() => handleVolume}
-                    />
-                  </div>
-                </Card.Body>
-              </Card>
-            </Row>
-          )}
-
-          {/* SEARCHBAR */}
-          <Row className="my-2">
-            <Form className="p-0" onSubmit={handleSubmit}>
-              <Form.Control
-                type="text"
-                placeholder="Search arstist or song"
-                value={inputForm}
-                onChange={(e) => setInputForm(e.target.value)}
-              />
-            </Form>
+                </div>
+                <div>
+                  <ProgressBar
+                    now={progress}
+                    className="flex-grow-1 my-2"
+                    onClick={(e) => handleTimeSkip(e)}
+                  />
+                  <p className="d-flex  mb-0">
+                    <span>{songTimeFormat(audioRef.current?.currentTime)}</span>
+                    <span>/{songTimeFormat(audioRef.current?.duration)}</span>
+                  </p>
+                  <audio
+                    ref={audioRef}
+                    src={selected?.preview}
+                    onTimeUpdate={handleTimeUpdate}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onEnded={() => (repeat == 2 ? play() : changeSong(repeat))}
+                    onVolumeChange={() => handleVolume}
+                  />
+                </div>
+              </Card.Body>
+            </Card>
           </Row>
+        )}
 
-          {fetchedData && fetchedData.length > 0 && (
-            <Container className="p-0 m-0">
-              {/* <CustomCarousel dataAPI={fetchedData} /> */}
-              {/* RISULTATI RICERCA */}
-              <Results fetchedData={fetchedData} selected={selected} setSelected={setSelected} modal={false}/>
-            </Container>
-          )}
-        </Container>
-      </Row>
+        {/* SEARCHBAR */}
+        <Row className="my-2">
+          <Form className="p-0" onSubmit={handleSubmit}>
+            <Form.Control
+              type="text"
+              placeholder="Search arstist or song"
+              value={inputForm}
+              onChange={(e) => setInputForm(e.target.value)}
+            />
+          </Form>
+        </Row>
+
+        {fetchedData && fetchedData.length > 0 && (
+          <Container className="p-0 m-0">
+            {/* <CustomCarousel dataAPI={fetchedData} /> */}
+            {/* RISULTATI RICERCA */}
+            <Results
+              fetchedData={fetchedData}
+              selected={selected}
+              setSelected={setSelected}
+              modal={false}
+            />
+          </Container>
+        )}
+      </Container>
     </>
   );
 };

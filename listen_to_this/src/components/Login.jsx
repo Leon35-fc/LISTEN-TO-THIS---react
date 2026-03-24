@@ -1,27 +1,62 @@
-import { Row, Col, Tabs, Tab, Form, Button } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Form, Button, Container } from 'react-bootstrap';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+
+  const navigate = useNavigate()
+
   const [registrationInput, setRegistrationInput] = useState({
     username: '',
     email: '',
     password: ''
   });
-  const [loginInput, setLoginInput] = useState({ username: '', password: '' });
+  const [loginInput, setLoginInput] = useState({ email: '', password: '' });
 
   const handleRegistrationInput = function (e) {
     setRegistrationInput({...registrationInput,[e.target.name]: e.target.value});
     console.log('valore registrato', e.target.value);
   };
 
-  const handleRegistrationSubmit = function (e) {
+  const regLoginFetch = function(endpoint, method, data) {
+    fetch(endpoint, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error during registration.')
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.accessToken) {
+        const token = data.accessToken;
+        localStorage.setItem('token', token);
+        console.log("Login completed.", token);
+        navigate('/home')
+    } else {
+      console.log("Registration completed.", data);
+    }})
+    .catch(error => {console.error(error);
+    })
+  }
+  
+
+  const handleRegistrationSubmit = async function (e) {
     e.preventDefault();
     const registration = {
       username: registrationInput.username,
       email: registrationInput?.email,
       password: registrationInput.password
+
     };
 
+    regLoginFetch('http://localhost:3001/auth/registration', 'POST', registration);
+    
     setRegistrationInput({
       username: '',
       email: '',
@@ -36,23 +71,28 @@ const Login = () => {
   const handleLoginSubmit = function(e) {
     e.preventDefault();
     const login = {
-        username: loginInput.username,
+        username: '',
+        email: loginInput.email,
         password: loginInput.password
     };
-    console.log('Dati di accesso inviati.');
 
-    setRegistrationInput({
+    regLoginFetch('http://localhost:3001/auth/login', 'POST', login)
+    
+    setLoginInput({
       username: '',
       email: '',
       password: ''
     });
-
+    
+    console.log('Dati di accesso inviati.');
+    
     return login
   }
 
+
   return (
-    <>
-      <Row className="border border-2 mt-3 pb-3">
+    <Container className="d-flex justify-content-center row-cols-1 row-cols-md-2 flex-wrap p-0 m-0">
+      <Row className="border border-3 rounded rounded-3 shadow mt-3 py-1 pb-3">
         <Tabs>
           <Tab eventKey="registration" title="Registration">
             <Form className="text-start" onSubmit={handleRegistrationSubmit}>
@@ -106,14 +146,14 @@ const Login = () => {
           <Tab eventKey="login" title="Login">
             <Form className="text-start" onSubmit={handleLoginSubmit}>
               <Form.Group>
-                <Form.Label className="my-2" htmlFor="username">
-                  Username
+                <Form.Label className="my-2" htmlFor="email">
+                  E-mail
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="username"
-                  name="username"
-                  value={loginInput.username}
+                  placeholder="E-mail"
+                  name="email"
+                  value={loginInput.email}
                   required
                   onChange={(e) =>
                     setLoginInput({
@@ -148,7 +188,7 @@ const Login = () => {
           </Tab>
         </Tabs>
       </Row>
-    </>
+    </Container>
   );
 };
 

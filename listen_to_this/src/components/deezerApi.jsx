@@ -11,7 +11,7 @@ export const deezerFetch = function (input, setFetchedData) {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error('Errore nel recupero dei dati.');
+          throw new Error('Error retriving data.');
         }
       })
       .then((data) => {
