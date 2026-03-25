@@ -65,8 +65,8 @@ const UserProfile = (props) => {
           className="bg-transparent border border-0"
         >
           <Image
-            src={user ? "https://placehold.co/400/" : `${user.profileImage}`}
-            height={80}
+            src={user.profileImage}
+            height={60}
             roundedCircle
             className=" border border-3 border-primary p-1"
           />

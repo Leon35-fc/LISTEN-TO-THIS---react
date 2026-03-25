@@ -2,9 +2,12 @@ import { Row, Col, Tabs, Tab, Form, Button, Container } from 'react-bootstrap';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = (props) => {
 
-  const navigate = useNavigate()
+  //PROPS
+  const onLogin = props.onLogin
+
+  const navigate = useNavigate();
 
   const [registrationInput, setRegistrationInput] = useState({
     username: '',
@@ -14,11 +17,14 @@ const Login = () => {
   const [loginInput, setLoginInput] = useState({ email: '', password: '' });
 
   const handleRegistrationInput = function (e) {
-    setRegistrationInput({...registrationInput,[e.target.name]: e.target.value});
+    setRegistrationInput({
+      ...registrationInput,
+      [e.target.name]: e.target.value
+    });
     console.log('valore registrato', e.target.value);
   };
 
-  const regLoginFetch = function(endpoint, method, data) {
+  const regLoginFetch = function (endpoint, method, data) {
     fetch(endpoint, {
       method: method,
       headers: {
@@ -26,25 +32,27 @@ const Login = () => {
       },
       body: JSON.stringify(data)
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error during registration.')
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.accessToken) {
-        const token = data.accessToken;
-        localStorage.setItem('token', token);
-        console.log("Login completed.", token);
-        navigate('/home')
-    } else {
-      console.log("Registration completed.", data);
-    }})
-    .catch(error => {console.error(error);
-    })
-  }
-  
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error during registration.');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.accessToken) {
+          onLogin(data.accessToken);
+          const token = data.accessToken;
+          localStorage.setItem('token', token);
+          console.log('Login completed.', token);
+          navigate('/home');
+        } else {
+          console.log('Registration completed.', data);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const handleRegistrationSubmit = async function (e) {
     e.preventDefault();
@@ -52,11 +60,14 @@ const Login = () => {
       username: registrationInput.username,
       email: registrationInput?.email,
       password: registrationInput.password
-
     };
 
-    regLoginFetch('http://localhost:3001/auth/registration', 'POST', registration);
-    
+    regLoginFetch(
+      'http://localhost:3001/auth/registration',
+      'POST',
+      registration
+    );
+
     setRegistrationInput({
       username: '',
       email: '',
@@ -65,30 +76,29 @@ const Login = () => {
 
     console.log('Dati registrazione inviati.', registration);
 
-    return registration
+    return registration;
   };
 
-  const handleLoginSubmit = function(e) {
+  const handleLoginSubmit = function (e) {
     e.preventDefault();
     const login = {
-        username: '',
-        email: loginInput.email,
-        password: loginInput.password
+      username: '',
+      email: loginInput.email,
+      password: loginInput.password
     };
 
-    regLoginFetch('http://localhost:3001/auth/login', 'POST', login)
-    
+    regLoginFetch('http://localhost:3001/auth/login', 'POST', login);
+
     setLoginInput({
       username: '',
       email: '',
       password: ''
     });
-    
-    console.log('Dati di accesso inviati.');
-    
-    return login
-  }
 
+    console.log('Dati di accesso inviati.');
+
+    return login;
+  };
 
   return (
     <Container className="d-flex justify-content-center row-cols-1 row-cols-md-2 flex-wrap p-0 m-0">

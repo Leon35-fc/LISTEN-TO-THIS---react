@@ -303,7 +303,7 @@ const CenterContent = () => {
         )}
 
         {/* SEARCHBAR */}
-        <Row className="my-2">
+        <Row className="row-cols-1 row-cols-md-3 justify-content-center my-2">
           <Form className="p-0" onSubmit={handleSubmit}>
             <Form.Control
               type="text"

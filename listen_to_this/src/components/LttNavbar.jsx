@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
+import UserProfile from './UserProfile';
 
-const LttNavbar = () => {
-  console.log(screen.width);
+const LttNavbar = (props) => {
+  //PROPS
+  const token = props.token
+  const onLogout = props.onLogout
 
   return (
     <Navbar
@@ -22,7 +25,7 @@ const LttNavbar = () => {
             <Nav.Link href="#link">Link</Nav.Link>
           </Nav>
           <Nav>
-            <Nav.Link href="#login">Login</Nav.Link>
+           {!token ? <Nav.Link href="#login">Login</Nav.Link> : <UserProfile token={token} onLogout={onLogout}/>}
           </Nav>
         </Navbar.Collapse>
       </Container>

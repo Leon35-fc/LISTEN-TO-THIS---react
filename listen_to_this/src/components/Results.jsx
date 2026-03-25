@@ -50,7 +50,7 @@ const Results = (props) =>{
                 {fetchedData.map((data) => (
                   <Row
                     key={data.id}
-                    className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-dark' : ''}  rounded rounded-2 py-1`}
+                    className={`row-cols-4 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-dark' : ''}  rounded rounded-2 py-1`}
                     onClick={(e) =>
                       {e.stopPropagation();(selected !== data ? setSelected(data) : setSelected(''))}
                     }
@@ -76,7 +76,7 @@ const Results = (props) =>{
                         <span className="fw-semibold">Album</span>{' '}
                         {data.album.title}
                       </p>
-                      {!modal && (<Row className="row-cols-2 row-cols-md-4 justify-content-between">
+                      {!modal && (<Row className="row-cols-3 row-cols-md-5 justify-content-between">
 
                         <Button className="px-0 mx-0" onClick={(e) => {e.stopPropagation(); setShow(data.id); console.log("Suggerisci!");
                         }}> Suggest! </Button>
