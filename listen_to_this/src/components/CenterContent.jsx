@@ -32,6 +32,8 @@ import { useNavigate } from 'react-router-dom';
 const CenterContent = () => {
   const searchURL =
     'https://striveschool-api.herokuapp.com/api/deezer/search?q=';
+
+  //USESTATE
   const [inputForm, setInputForm] = useState('');
   const [fetchedData, setFetchedData] = useState([]);
   //FETCHED ELEMENTS
@@ -198,7 +200,7 @@ const CenterContent = () => {
       <Container>
         {/* CARD/PLAYER */}
         {fetchedData.length > 0 && (
-          <Row className="row-cols-1 border border-2 border-black my-3 p-2">
+          <Row className="row-cols-1 row-cols-md-2 justify-content-center border border-2 border-black my-3 p-2">
             <Card className="d-flex align-items-center">
               <Card.Img
                 variant="top"
@@ -216,7 +218,7 @@ const CenterContent = () => {
                 <Card.Text className="d-flex align-content-start">
                   {!selected ? '' : selected.artist.name}
                 </Card.Text>
-                <div className="d-flex align-items-center">
+                <div className="d-flex justify-content-center flex-wrap flex-lg-nowrap gap-2">
                   <div className="d-flex justify-content-start gap-1 me-auto w-100">
                     <Button onClick={() => changeSong(-1)}>
                       <BsFillSkipBackwardFill className="fs-6 d-flex align-middle justify-content-start" />
@@ -255,6 +257,12 @@ const CenterContent = () => {
                     </Button>
                   </div>
                   <div className="d-flex align-items-center gap-2 flex-grow-1 ms-3">
+                        <Button
+                          className="fs-5 d-flex align-middle justify-content-start"
+                          onClick={handleMute}
+                        >
+                          {volumeIcon()}
+                        </Button>
                     <Form.Range
                       className="p-1"
                       min="0"
@@ -269,12 +277,6 @@ const CenterContent = () => {
                         onDrag={handleVolume}
                         // label={Math.round(slider)}
                       /> */}
-                    <Button
-                      className="fs-5 d-flex align-middle justify-content-start"
-                      onClick={handleMute}
-                    >
-                      {volumeIcon()}
-                    </Button>
                   </div>
                 </div>
                 <div>

@@ -28,11 +28,32 @@ function NewSuggestion(props) {
       console.log(songId);
       console.log(suggestedSelect);
       let suggested = {
-        "song_id": songId,
-        "suggested_id": suggestedSelect.id,
+        "songId": songId,
+        "suggestionId": suggestedSelect.id,
         "vote": 0
       }
       console.log("To suggested-API", suggested);
+
+      fetch('http://localhost:3001/suggestions/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify(suggested),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Errore nella risposta del server");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Successo! Dati salvati o aggiornati:", data);
+    })
+    .catch((error) => {
+      console.error("Errore durante la fetch:", error);
+    });
     }
 
   return (
