@@ -256,8 +256,8 @@ const CenterContent = () => {
       <Container>
         {/* CARD/PLAYER */}
         {fetchedData.length > 0 && (
-          <Row className="row-cols-1 row-cols-md-2 justify-content-center border border-2 border-black my-3 p-2">
-            <Card className="d-flex align-items-center">
+          <Row className="row-cols-1 row-cols-md-2 justify-content-center /*border border-2 border-black*/ my-3 p-2">
+            <Card className="d-flex align-items-center shadow">
               <Card.Img
                 variant="top"
                 src={
@@ -376,7 +376,7 @@ const CenterContent = () => {
           <Container className="p-0 m-0">
             {/* <CustomCarousel dataAPI={fetchedData} /> */}
             
-            <Row className="row-cols-1 justify-content-center gap-5">
+            <Row className="row-cols-1 row-cols-2 justify-content-center gap-5">
               {fetchedData && fetchedData.length > 0 &&( <Results
                 text={'Results'}
                 fetchedData={fetchedData}

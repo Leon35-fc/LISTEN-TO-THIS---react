@@ -10,7 +10,7 @@ const LttNavbar = (props) => {
   return (
     <Navbar
       expand="lg"
-      className="d-flex justify-content-between bg-body-tertiary border border-2 border-black"
+      className="d-flex justify-content-between bg-info-subtle /*border border-2 border-black*/ rounded rounded-2"
     >
       <Container className="d-flex row-cols-4 row-cols-lg-1 flex-wrap text-start">
         <Navbar.Brand href="#home">
