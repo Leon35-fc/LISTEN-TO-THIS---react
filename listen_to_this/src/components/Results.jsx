@@ -16,6 +16,7 @@ const Results = (props) =>{
     const fetchedData = props.fetchedData
     const setSelected = props.setSelected
     const modal = props.modal
+    const text = props.text
     //USESTATE
     const [like, setLike] = useState([])
     const [show, setShow] = useState(false)
@@ -45,8 +46,8 @@ const Results = (props) =>{
 
     return(
         <>
-                <h4 className="text-start">Results</h4>
-        <Row className={`text-start border border-1 bg-info-subtle rounded rounded-2 py-2 ${modal && 'overflow-y-auto'}`} style={modal ? { height: '500px' } : {}}>
+        <Row className={`text-start border border-1 bg-info-subtle rounded rounded-2 py-2 overflow-y-auto`} style={{ height: '500px' }}>
+                <h4 className="text-start">{text}</h4>
                 {fetchedData.map((data) => (
                   <Row
                     key={data.id}
@@ -62,19 +63,19 @@ const Results = (props) =>{
                         width={125}
                         height={125}
                         alt="album cover"
-                        src={data.album.cover_xl}/>
+                        src={data.album?.cover_xl}/>
                     </Figure>
                     <div className="flex-grow-1 p-0">
                       <p className="mb-1">
                         <span className="fw-semibold">Artist</span>{' '}
-                        {data.artist.name}
+                        {data.artist?.name}
                       </p>
                       <p className="mb-1">
-                        <span className="fw-semibold">Song</span> {data.title}
+                        <span className="fw-semibold">Song</span> {data?.title}
                       </p>
                       <p className="mb-1">
                         <span className="fw-semibold">Album</span>{' '}
-                        {data.album.title}
+                        {data.album?.title}
                       </p>
                       {!modal && (<Row className="row-cols-3 row-cols-md-5 justify-content-between">
 

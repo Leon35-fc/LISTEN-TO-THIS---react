@@ -77,6 +77,7 @@ function NewSuggestion(props) {
           {suggestedFetchData && suggestedFetchData.length > 0 && (
             <Container className="p-0 m-0">
               <Results
+                text={''}
                 fetchedData={suggestedFetchData}
                 selected={suggestedSelect}
                 setSelected={setSuggestedSelect}

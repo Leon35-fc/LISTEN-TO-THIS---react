@@ -49,7 +49,7 @@ const CenterContent = () => {
   //TRACK
   const [repeat, setRepeat] = useState(0);
   //SUGGESTION
-
+  const [suggestedFetchData, setSuggestedFetchData] = useState([]);
   //NAV-ROUTE-DOM
 
   //FUNCTIONS
@@ -187,6 +187,60 @@ const CenterContent = () => {
     }
   };
 
+  const suggestionFetch = function(song){
+
+    console.log(song);
+    if(!song){
+      return;
+    }
+
+    // let suggestions = [];
+
+    const token = localStorage.getItem('token')
+    
+    const URL = 'http://localhost:3001/suggestions/' + song.id
+    const deezerURL = 'https://striveschool-api.herokuapp.com/api/deezer/track/'
+
+    fetch(URL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then((response) => {
+      if(!response.ok){
+        throw new Error('Error retrieving data.')
+      }else{
+        return response.json();
+      }})
+      .then((data) => {
+        console.log("2° then: ", data);
+        
+        const suggestions = data.map( s => {
+          return fetch(deezerURL + s.id)
+          .then(res => {
+            if(!res.ok) {
+              throw new Error("Error retrieving suggestion from Deezer. ID: ", s.id);
+             } else {
+               return res.json();
+             }});
+        });
+        Promise.all(suggestions)
+        .then((allTracks) => {
+        console.log("Suggerimenti recuperati: ", allTracks)
+        setSuggestedFetchData(allTracks);
+      })
+      .catch(error => {
+        throw new Error("Error retrieving song's details from Deezer: ", error)
+      })
+        console.log("Suggerimenti: ", suggestions);
+      })
+      .catch((error) => {
+        console.log('Error retrieving suggestions.', error);
+      })
+  }
+
   useEffect(() => deezerFetch(), []);
 
   useEffect(() => (selected ? play() : stop()), [selected]);
@@ -194,6 +248,8 @@ const CenterContent = () => {
   // useEffect(() => repeat == 'repeat_one' ? play() : changeSong())
 
   useEffect(() => setIsPlaying(false), []);
+
+  useEffect(() => suggestionFetch(selected),[selected])
 
   return (
     <>
@@ -257,12 +313,12 @@ const CenterContent = () => {
                     </Button>
                   </div>
                   <div className="d-flex align-items-center gap-2 flex-grow-1 ms-3">
-                        <Button
-                          className="fs-5 d-flex align-middle justify-content-start"
-                          onClick={handleMute}
-                        >
-                          {volumeIcon()}
-                        </Button>
+                    <Button
+                      className="fs-5 d-flex align-middle justify-content-start"
+                      onClick={handleMute}
+                    >
+                      {volumeIcon()}
+                    </Button>
                     <Form.Range
                       className="p-1"
                       min="0"
@@ -316,18 +372,29 @@ const CenterContent = () => {
           </Form>
         </Row>
 
-        {fetchedData && fetchedData.length > 0 && (
+            {/* RISULTATI RICERCA */}
           <Container className="p-0 m-0">
             {/* <CustomCarousel dataAPI={fetchedData} /> */}
-            {/* RISULTATI RICERCA */}
-            <Results
-              fetchedData={fetchedData}
-              selected={selected}
-              setSelected={setSelected}
-              modal={false}
-            />
+            
+            <Row className="row-cols-1 justify-content-center gap-5">
+              {fetchedData && fetchedData.length > 0 &&( <Results
+                text={'Results'}
+                fetchedData={fetchedData}
+                selected={selected}
+                setSelected={setSelected}
+                modal={false}
+              />)}
+
+              {/* SUGGERIMENTI */}
+              {suggestedFetchData && suggestedFetchData.length > 0 && (<Results
+                text={'Suggestions'}
+                fetchedData={suggestedFetchData}
+                selected={selected}
+                setSelected={setSelected}
+                modal={true}
+              />)}
+            </Row>
           </Container>
-        )}
       </Container>
     </>
   );
