@@ -31,6 +31,8 @@ const UserProfile = (props) => {
     .then(userData => {
       console.log("Dati utente ricevuti:", userData);
       setUser(userData)
+          localStorage.setItem('results', JSON.stringify(userData.favourites));
+  
     })
     .catch(error => {
       console.error("Si è verificato un problema:", error);

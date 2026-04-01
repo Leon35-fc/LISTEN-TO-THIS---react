@@ -90,7 +90,7 @@ function NewSuggestion(props) {
           <Button variant="secondary" onClick={() => {setShow(false)}}>
             Close
           </Button>
-          <Button variant="primary" onClick={(e) => {handleSuggestedSubmit(e); setShow(false)}}>
+          <Button className='primary-color' onClick={(e) => {handleSuggestedSubmit(e); setShow(false)}}>
             Submit
           </Button>
         </Modal.Footer>

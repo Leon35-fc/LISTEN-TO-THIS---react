@@ -187,59 +187,66 @@ const CenterContent = () => {
     }
   };
 
-  const suggestionFetch = function(song){
-
+  const suggestionFetch = function (song) {
     console.log(song);
-    if(!song){
+    if (!song) {
       return;
     }
 
     // let suggestions = [];
 
-    const token = localStorage.getItem('token')
-    
-    const URL = 'http://localhost:3001/suggestions/' + song.id
-    const deezerURL = 'https://striveschool-api.herokuapp.com/api/deezer/track/'
+    const token = localStorage.getItem('token');
+
+    const URL = 'http://localhost:3001/suggestions/' + song.id;
+    const deezerURL =
+      'https://striveschool-api.herokuapp.com/api/deezer/track/';
 
     fetch(URL, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       }
     })
-    .then((response) => {
-      if(!response.ok){
-        throw new Error('Error retrieving data.')
-      }else{
-        return response.json();
-      }})
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error retrieving data.');
+        } else {
+          return response.json();
+        }
+      })
       .then((data) => {
-        console.log("2° then: ", data);
-        
-        const suggestions = data.map( s => {
-          return fetch(deezerURL + s.id)
-          .then(res => {
-            if(!res.ok) {
-              throw new Error("Error retrieving suggestion from Deezer. ID: ", s.id);
-             } else {
-               return res.json();
-             }});
+        console.log('2° then: ', data);
+
+        const suggestions = data.map((s) => {
+          return fetch(deezerURL + s.id).then((res) => {
+            if (!res.ok) {
+              throw new Error(
+                'Error retrieving suggestion from Deezer. ID: ',
+                s.id
+              );
+            } else {
+              return res.json();
+            }
+          });
         });
         Promise.all(suggestions)
-        .then((allTracks) => {
-        console.log("Suggerimenti recuperati: ", allTracks)
-        setSuggestedFetchData(allTracks);
-      })
-      .catch(error => {
-        throw new Error("Error retrieving song's details from Deezer: ", error)
-      })
-        console.log("Suggerimenti: ", suggestions);
+          .then((allTracks) => {
+            console.log('Suggerimenti recuperati: ', allTracks);
+            setSuggestedFetchData(allTracks);
+          })
+          .catch((error) => {
+            throw new Error(
+              "Error retrieving song's details from Deezer: ",
+              error
+            );
+          });
+        console.log('Suggerimenti: ', suggestions);
       })
       .catch((error) => {
         console.log('Error retrieving suggestions.', error);
-      })
-  }
+      });
+  };
 
   useEffect(() => deezerFetch(), []);
 
@@ -249,7 +256,7 @@ const CenterContent = () => {
 
   useEffect(() => setIsPlaying(false), []);
 
-  useEffect(() => suggestionFetch(selected),[selected])
+  useEffect(() => suggestionFetch(selected), [selected]);
 
   return (
     <>
@@ -257,7 +264,7 @@ const CenterContent = () => {
         {/* CARD/PLAYER */}
         {fetchedData.length > 0 && (
           <Row className="row-cols-1 row-cols-md-2 justify-content-center /*border border-2 border-black*/ my-3 p-2">
-            <Card className="d-flex align-items-center shadow">
+            <Card className="d-flex align-items-center tertiary-text secondary-color shadow">
               <Card.Img
                 variant="top"
                 src={
@@ -276,10 +283,11 @@ const CenterContent = () => {
                 </Card.Text>
                 <div className="d-flex justify-content-center flex-wrap flex-lg-nowrap gap-2">
                   <div className="d-flex justify-content-start gap-1 me-auto w-100">
-                    <Button onClick={() => changeSong(-1)}>
+                    <Button className="primary-color" onClick={() => changeSong(-1)}>
                       <BsFillSkipBackwardFill className="fs-6 d-flex align-middle justify-content-start" />
                     </Button>
                     <Button
+                      className='primary-color'
                       onClick={() => {
                         isPlaying ? pause() : play();
                       }}
@@ -292,13 +300,13 @@ const CenterContent = () => {
                     </Button>
                     <Button
                       onClick={() => stop()}
-                      className="fs-6 d-flex align-middle justify-content-start"
+                      className="fs-6 d-flex align-middle justify-content-start primary-color"
                     >
                       <BsFillStopFill />
                     </Button>
                     <Button
                       onClick={() => changeSong(1)}
-                      className="fs-6 d-flex align-middle justify-content-start"
+                      className="fs-6 d-flex align-middle justify-content-start primary-color"
                     >
                       <BsFillSkipForwardFill />
                     </Button>
@@ -307,14 +315,14 @@ const CenterContent = () => {
                         setRepeat((repeat + 1) % 3);
                         console.log(repeatIcon());
                       }}
-                      className="fs-6 d-flex align-middle justify-content-start"
+                      className="fs-6 d-flex primary-color align-middle justify-content-start"
                     >
                       {repeatIcon(repeat)}
                     </Button>
                   </div>
                   <div className="d-flex align-items-center gap-2 flex-grow-1 ms-3">
                     <Button
-                      className="fs-5 d-flex align-middle justify-content-start"
+                      className="fs-5 primary-color d-flex align-middle justify-content-start"
                       onClick={handleMute}
                     >
                       {volumeIcon()}
@@ -338,7 +346,7 @@ const CenterContent = () => {
                 <div>
                   <ProgressBar
                     now={progress}
-                    className="flex-grow-1 my-2"
+                    className="flex-grow-1 tertiary-color my-2"
                     onClick={(e) => handleTimeSkip(e)}
                   />
                   <p className="d-flex  mb-0">
@@ -372,29 +380,33 @@ const CenterContent = () => {
           </Form>
         </Row>
 
-            {/* RISULTATI RICERCA */}
-          <Container className="p-0 m-0">
-            {/* <CustomCarousel dataAPI={fetchedData} /> */}
-            
-            <Row className="row-cols-1 row-cols-lg-2 justify-content-center gap-5">
-              {fetchedData && fetchedData.length > 0 &&( <Results
+        {/* RISULTATI RICERCA */}
+        <Container className="p-0 m-0">
+          {/* <CustomCarousel dataAPI={fetchedData} /> */}
+
+          <Row className="row-cols-1 row-cols-lg-2 justify-content-center gap-5">
+            {fetchedData && fetchedData.length > 0 && (
+              <Results
                 text={'Results'}
                 fetchedData={fetchedData}
                 selected={selected}
                 setSelected={setSelected}
                 modal={false}
-              />)}
+              />
+            )}
 
-              {/* SUGGERIMENTI */}
-              {suggestedFetchData && suggestedFetchData.length > 0 && (<Results
+            {/* SUGGERIMENTI */}
+            {suggestedFetchData && suggestedFetchData.length > 0 && (
+              <Results
                 text={'Suggestions'}
                 fetchedData={suggestedFetchData}
                 selected={selected}
                 setSelected={setSelected}
                 modal={true}
-              />)}
-            </Row>
-          </Container>
+              />
+            )}
+          </Row>
+        </Container>
       </Container>
     </>
   );
