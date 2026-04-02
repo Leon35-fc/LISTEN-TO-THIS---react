@@ -1,9 +1,11 @@
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
+  max-width: 100%;
+  min-height: 1020px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  background-color: #1E293B !important;
+  background-color: #1e293b !important;
 }
 
 /* .logo {
@@ -50,7 +52,7 @@
 
 .card{
   /* background-color: rgba(255, 79, 79, 0.3); */
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(80px) !important;
 }
 
 .progress{
@@ -94,6 +96,36 @@
   background-color: #1E293B !important;
 }
 
-.nav > .nav-tabs{
+/* .nav > .nav-tabs{
   background-color: #1E293B !important;
+} */
+
+input::placeholder{
+  color: #F8FAFC !important;
 }
+
+.shadow{
+  box-shadow: rgb(0, 0, 0) 0px 0px 12px 0px !important;
+}
+
+.scrollable::-webkit-scrollbar{
+  scrollbar-width: thin !important;
+  background-color: transparent !important; 
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+
+.scrollable:hover::-webkit-scrollbar{
+  background-color: transparent !important; 
+}
+
+ .scrollable:hover::-webkit-scrollbar-thumb{
+  background: #6366F1 !important;
+ }
+
+/* .scrollable:hover{
+  padding: 0;
+  overflow-y: scroll !important;
+} */

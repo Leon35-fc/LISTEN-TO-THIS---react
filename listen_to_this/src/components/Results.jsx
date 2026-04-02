@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Row, Button, Figure } from 'react-bootstrap';
+import { Row, Button, Figure, Container } from 'react-bootstrap';
 
-import { BsHandThumbsUp, BsHandThumbsUpFill } from 'react-icons/bs';
+import { BsHandThumbsUp, BsHandThumbsUpFill, BsStar, BsStarFill } from 'react-icons/bs';
 import NewSuggestion from './NewSuggestion';
 
 const Results = (props) => {
@@ -65,20 +65,21 @@ const Results = (props) => {
   return (
     <>
       <Row
-        className={`text-start align-content-start border border-1 text-white secondary-color rounded rounded-2 py-2 overflow-y-auto`}
-        style={{ height: '500px' }}
+        className={`text-start align-content-start border border-3 primary-border-color shadow text-white secondary-color rounded rounded-2 py-2`}
       >
         <h4 className="text-start">{text}</h4>
+        <Container className="overflow-y-auto scrollable m-0 p-0 pe-2" style={{ height: '480px' }}>
         {fetchedData.map((data) => (
           <Row
             key={text + -+data.id}
-            className={`row-cols-4 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-color-primary' : ''}  rounded rounded-2 py-1`}
+            className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-color-primary' : ''}  rounded rounded-2 py-1`}
             onClick={(e) => {
               e.stopPropagation();
               selected !== data ? setSelected(data) : setSelected('');
             }}
           >
             {/* <img src={data.album.cover_xl} alt="album cover" className="w-25"/> */}
+            
             <Figure className="m-0">
               <Figure.Image
                 className="m-0"
@@ -99,7 +100,7 @@ const Results = (props) => {
                 <span className="fw-semibold">Album</span> {data.album?.title}
               </p>
               {!modal && (
-                <Row className="row-cols-3 row-cols-md-5 justify-content-between">
+                <Row className="row-cols-2 row-cols-md-4 justify-content-between mx-1">
                   <Button
                     className="primary-color px-0 mx-0"
                     onClick={(e) => {
@@ -117,6 +118,7 @@ const Results = (props) => {
                     setShow={setShow}
                     songId={data.id}
                   />
+                  <div className='d-flex flex-row flex-grow-1 justify-content-end'>
                   <Button
                     className="bg-transparent text-primary border border-0"
                     onClick={(e) => {
@@ -132,11 +134,28 @@ const Results = (props) => {
                       <BsHandThumbsUp />
                     )}
                   </Button>
+                  <Button
+                    className="bg-transparent text-primary border border-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLike(data.id);
+                      handleFavourite(data.id);
+                    }}
+                  >
+                    {' '}
+                    {like.includes(data.id) ? (
+                      <BsStar className="transparent" />
+                    ) : (
+                      <BsStar />
+                    )}
+                  </Button>
+                  </div>
                 </Row>
               )}
             </div>
           </Row>
         ))}
+        </Container>
       </Row>
     </>
   );

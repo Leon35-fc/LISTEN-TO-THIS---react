@@ -328,6 +328,7 @@ const CenterContent = () => {
                       {volumeIcon()}
                     </Button>
                     <Form.Range
+                      as={Range}
                       className="p-1"
                       min="0"
                       max="100"
@@ -369,9 +370,10 @@ const CenterContent = () => {
         )}
 
         {/* SEARCHBAR */}
-        <Row className="row-cols-1 row-cols-md-3 justify-content-center my-2">
+        <Row className="row-cols-1 row-cols-md-3 justify-content-center my-3">
           <Form className="p-0" onSubmit={handleSubmit}>
             <Form.Control
+            className='secondary-color border border-3 primary-border-color tertiary-text'
               type="text"
               placeholder="Search arstist or song"
               value={inputForm}
@@ -384,7 +386,8 @@ const CenterContent = () => {
         <Container className="p-0 m-0">
           {/* <CustomCarousel dataAPI={fetchedData} /> */}
 
-          <Row className="row-cols-1 row-cols-lg-2 justify-content-center gap-5">
+        {/* RISULTATI */}
+          <Row className="row-cols-1 row-cols-lg-2 justify-content-center gap-5 m-0 p-0">
             {fetchedData && fetchedData.length > 0 && (
               <Results
                 text={'Results'}

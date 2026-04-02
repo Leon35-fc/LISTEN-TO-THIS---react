@@ -103,7 +103,7 @@ const Login = (props) => {
   };
 
   return (
-    <Container className="d-flex justify-content-center bg-darkrow-cols-1 row-cols-md-2 row-cols-lg-3 flex-wrap p-0 m-0">
+    <Container className="d-flex justify-content-center row-cols-1 row-cols-md-2 row-cols-lg-3 flex-wrap p-0 m-0">
       <Row className="border border-3 rounded rounded-3 shadow mt-3 py-1 pb-3">
         <Tabs>
           <Tab eventKey="registration" title="Registration">

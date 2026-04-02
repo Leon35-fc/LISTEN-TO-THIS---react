@@ -62,7 +62,7 @@ function NewSuggestion(props) {
         <Modal.Header closeButton>
           <Modal.Title>Suggest a song!</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="secondary-color">
           <Row className="my-2">
             <Form className="p-0" onSubmit={handleSuggestedSearch}>
               <Form.Control

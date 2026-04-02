@@ -76,7 +76,7 @@ const UserProfile = (props) => {
         <Dropdown.Menu className="">
           <Dropdown.Item >{user.username}</Dropdown.Item>
           <Dropdown.Item >{user.email}</Dropdown.Item>
-          <Dropdown.Item onClick={onLogout} className='text-light bg-danger'>Logout</Dropdown.Item>
+          <Dropdown.Item onClick={onLogout} className='text-light danger-color'>Logout</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </>
