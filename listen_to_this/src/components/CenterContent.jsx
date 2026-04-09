@@ -264,7 +264,7 @@ const CenterContent = () => {
         {/* CARD/PLAYER */}
         {fetchedData.length > 0 && (
           <Row className="row-cols-1 row-cols-md-2 justify-content-center /*border border-2 border-black*/ my-3 p-2">
-            <Card className="d-flex align-items-center tertiary-text secondary-color shadow">
+            <Card className="d-flex align-items-center tertiary-text bg-transparent bg-opacity-10 shadow">
               <Card.Img
                 variant="top"
                 src={
@@ -370,7 +370,7 @@ const CenterContent = () => {
         )}
 
         {/* SEARCHBAR */}
-        <Row className="row-cols-1 row-cols-md-3 justify-content-center my-3">
+        <Row className="row-cols-1 row-cols-md-3 justify-content-center my-5">
           <Form className="p-0" onSubmit={handleSubmit}>
             <Form.Control
             className='secondary-color border border-3 primary-border-color tertiary-text'

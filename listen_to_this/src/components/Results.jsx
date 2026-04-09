@@ -65,14 +65,14 @@ const Results = (props) => {
   return (
     <>
       <Row
-        className={`text-start align-content-start border border-3 primary-border-color shadow text-white secondary-color rounded rounded-2 py-2`}
+        className={`text-start align-content-start border primary-border-color shadow text-white secondary-color rounded rounded-2 py-2`}
       >
         <h4 className="text-start">{text}</h4>
         <Container className="overflow-y-auto scrollable m-0 p-0 pe-2" style={{ height: '480px' }}>
-        {fetchedData.map((data) => (
+        {fetchedData.map((data) => data != NaN ? (
           <Row
-            key={text + -+data.id}
-            className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-color-primary' : ''}  rounded rounded-2 py-1`}
+            key={text + - + data.id}
+            className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-color-primary selected-primary-color shadow' : ''}  rounded rounded-2 py-1`}
             onClick={(e) => {
               e.stopPropagation();
               selected !== data ? setSelected(data) : setSelected('');
@@ -154,7 +154,7 @@ const Results = (props) => {
               )}
             </div>
           </Row>
-        ))}
+        ) : '' )}
         </Container>
       </Row>
     </>

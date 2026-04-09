@@ -68,6 +68,10 @@
   background-color: #6366F1 !important;
 }
 
+.selected-primary-color{
+  background-color: hsla(239, 84%, 67%, 0.2) !important;
+}
+
 .primary-border-color{
   border-color: #6366F1 !important;
 }
@@ -105,7 +109,7 @@ input::placeholder{
 }
 
 .shadow{
-  box-shadow: rgb(0, 0, 0) 0px 0px 12px 0px !important;
+  box-shadow: rgb(0, 0, 0) 0px 0px 6px 0px !important;
 }
 
 .scrollable::-webkit-scrollbar{
