@@ -14,7 +14,7 @@ const LttNavbar = (props) => {
     >
       <Container className="d-flex row-cols-4 row-cols-lg-1 flex-wrap text-start">
         <Navbar.Brand href="#home">
-          <span className="bg-primary px-2 rounded rounded-1 fs-2 fw-semibold">
+          <span className="bg-primary px-2 rounded rounded-1 fs-1 fw-semibold ">
             Listen to this!
           </span>
         </Navbar.Brand>

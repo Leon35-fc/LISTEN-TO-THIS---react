@@ -69,7 +69,7 @@ const Results = (props) => {
       >
         <h4 className="text-start">{text}</h4>
         <Container className="overflow-y-auto scrollable m-0 p-0 pe-2" style={{ height: '480px' }}>
-        {fetchedData.map((data) => data != NaN ? (
+        {fetchedData.map((data) => data != 'error' ? (
           <Row
             key={text + - + data.id}
             className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-color-primary selected-primary-color shadow' : ''}  rounded rounded-2 py-1`}
@@ -82,7 +82,7 @@ const Results = (props) => {
             
             <Figure className="m-0">
               <Figure.Image
-                className="m-0"
+                className="m-0 img-fluid"
                 width={125}
                 height={125}
                 alt="album cover"
@@ -90,14 +90,14 @@ const Results = (props) => {
               />
             </Figure>
             <div className="flex-grow-1 p-0">
-              <p className="mb-1">
-                <span className="fw-semibold">Artist</span> {data.artist?.name}
+              <p className="mb-1 fw-semibold fs-5">
+                {data.artist?.name}
+              </p>
+              <p className="mb-1 fs-4">
+                {data?.title}
               </p>
               <p className="mb-1">
-                <span className="fw-semibold">Song</span> {data?.title}
-              </p>
-              <p className="mb-1">
-                <span className="fw-semibold">Album</span> {data.album?.title}
+                {data.album?.title}
               </p>
               {!modal && (
                 <Row className="row-cols-2 row-cols-md-4 justify-content-between mx-1">
