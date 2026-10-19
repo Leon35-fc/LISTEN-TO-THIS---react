@@ -61,7 +61,7 @@
 }
 .progress:hover{
   background-color: var(--bs-secondary-bg);
-  transform: scaleY(0.8);
+  transform: scaleY(0.7);
 }
 
 .primary-color{
@@ -105,7 +105,27 @@
 } */
 
 input::placeholder{
+  color: transparent !important;
+}
+
+form > div {
   color: #F8FAFC !important;
+  /* font-size: 1.6rem; */
+}
+
+form > div input{
+  margin-top: 0.5rem;
+  padding: 0 1rem 1rem 0 !important;
+  background-color: transparent !important;
+  color: #F8FAFC !important;
+}
+
+li button.active {
+  color: #F8FAFC !important;
+  background-color: #6366F1 !important;
+  transition: background-color 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-bottom: 0px!important;
+  /* border-color: yellow !important ; */
 }
 
 .shadow{

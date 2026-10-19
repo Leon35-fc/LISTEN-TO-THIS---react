@@ -82,7 +82,7 @@ const Login = (props) => {
   const handleLoginSubmit = function (e) {
     e.preventDefault();
     const login = {
-      username: '',
+      // username: '',
       email: loginInput.email,
       password: loginInput.password
     };
@@ -90,7 +90,7 @@ const Login = (props) => {
     regLoginFetch('http://localhost:3001/auth/login', 'POST', login);
 
     setLoginInput({
-      username: '',
+      // username: '',
       email: '',
       password: ''
     });
@@ -103,10 +103,10 @@ const Login = (props) => {
   };
 
   return (
-    <Container className="d-flex justify-content-center row-cols-1 row-cols-md-2 row-cols-lg-3 flex-wrap p-0 m-0">
-      <Row className="border border-3 rounded rounded-3 shadow mt-3 py-1 pb-3">
+    <Container className="d-flex justify-content-center row-cols-1 row-cols-md-2 row-cols-lg-3">
+      <Row className="fs-4 border border-3 rounded rounded-3 shadow mt-3 p-3">
         <Tabs>
-          <Tab eventKey="registration" title="Registration">
+          <Tab className="" eventKey="registration" title="Registration">
             <Form className="text-start" onSubmit={handleRegistrationSubmit}>
               <Form.Group>
                 <Form.Label className="my-2" htmlFor="username">

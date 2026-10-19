@@ -27,7 +27,7 @@ import { TbRepeat, TbRepeatOnce, TbRepeatOff } from 'react-icons/tb';
 import { deezerFetch } from './deezerApi';
 import CustomCarousel from './CustomCarousel';
 import Results from './Results';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const CenterContent = () => {
   const searchURL =
@@ -269,7 +269,7 @@ const CenterContent = () => {
                 variant="top"
                 src={
                   !selected
-                    ? ' ' // 'https://placehold.co/400/' in alternativa alla stringa null
+                    ? ' ' // 'https://placehold.co/400/' in alternativa alla stringa null 
                     : selected.album.cover_xl
                 }
                 className="w-50 mt-2"

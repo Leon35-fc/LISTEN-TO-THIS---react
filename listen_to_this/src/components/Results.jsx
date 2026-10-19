@@ -72,7 +72,7 @@ const Results = (props) => {
         {fetchedData.map((data) => data != 'error' ? (
           <Row
             key={text + - + data.id}
-            className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-1 border-color-primary selected-primary-color shadow' : ''}  rounded rounded-2 py-1`}
+            className={`row-cols-3 m-0 my-1 p-0 ${selected.id === data.id ? 'border border-2 border-color-primary selected-primary-color shadow' : ''}  rounded rounded-2 py-1`}
             onClick={(e) => {
               e.stopPropagation();
               selected !== data ? setSelected(data) : setSelected('');
